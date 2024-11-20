@@ -7,7 +7,9 @@ api_url="https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/
 kda =0
 playerList=[None]*10
 
+
 def obtain():
+    totalkda=0
     #getting the json file, then parsing the json file, and then grabbing the puuid
     puuid=requests.get(api_url).json()["puuid"]
 
@@ -39,8 +41,10 @@ def obtain():
                 kda =match_data_call["info"]["participants"][info]["challenges"]["kda"]
                 temp_name=match_data_call["info"]["participants"][info]["summonerName"]
                 time.sleep(1.5)
-                print(temp_name,matches)
+                print(temp_name,kda)
+                totalkda=totalkda+kda
             except:
                 print("Well that just happened!")
+        print("Average KDA:"+str(totalkda/5))
         ####
 obtain()
