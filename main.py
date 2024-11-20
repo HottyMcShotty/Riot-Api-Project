@@ -12,23 +12,35 @@ puuid=account["puuid"]
 matches_url="https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/"+puuid+"/ids?start=0&count=10&api_key="+api_key
 matches_requests=requests.get(matches_url)
 matches=matches_requests.json()
-
-
+kdalist=[None]*10
 for x in range(10):
-    match_id=matches[x]
+    match_id=matches[0]
     temp_match="https://americas.api.riotgames.com/lol/match/v5/matches/"+match_id+"?api_key="+api_key
     match_data_call=requests.get(temp_match)
     match_data=match_data_call.json()
-    info=match_data['metadata']["participants"].index(puuid)
-    kda=match_data["info"]["participants"][info]['challenges']["kda"]
-match_id=matches[6]
-kda=match_data["info"]["participants"][info]['challenges']["kda"]
-print(kda)
+    info=match_data['metadata']["participants"]
+    temp_puuid=info[x]
+    for y in range(5):
+        temp_matches_url="https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/"+temp_puuid+"/ids?start=0&count=5&api_key="+api_key
+        temp_matches_requests=requests.get(temp_matches_url)
+        temp_matches=temp_matches_requests.json()
+        temp_match_id=temp_matches[y]
+        temp_match_data_call=requests.get(temp_match)
+        temp_match_data=match_data_call.json()
+        kda=temp_match_data["info"]["participants"][info]['challenges']["kda"]
+        
+for x in range(10):
+    print(kdalist[x])
+        
+
+    #kda=match_data["info"]["participants"][info]['challenges']["kda"]
+print(match_id)
 
 
+'''
 def update_label(x):
     if x[0] % 2 == 0:
-        label.config(text="Updated!")
+        label.config(text=kda)
     else:
         label.config(text="Original Text")
     x[0] += 1
@@ -46,3 +58,4 @@ button = tk.Button(root, text="Update Text!", command=lambda: update_label(x))
 button.grid(row=1, column=1, padx=10, pady=10)
 
 root.mainloop()
+'''
