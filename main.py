@@ -42,7 +42,7 @@ def obtain():
         winsum=0
         ####Iteating through our player list and getting match ids for their last 10 matches
         matches_url="https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/"+playerList[x]+"/ids?start=0&count=5&api_key="+API_KEY
-        for y in range(5):
+        for y in range(3):
             try:
                 matches=requests.get(matches_url).json()[y]
                 ####
@@ -52,7 +52,6 @@ def obtain():
                 ####Grabbing Data From the Match
                 info=match_data_call['metadata']["participants"].index(playerList[x])
                 kda =match_data_call["info"]["participants"][info]["challenges"]["kda"]
-                time.sleep(1.5)
                 win =match_data_call["info"]["participants"][info]["win"]
                 totalkda=totalkda+kda
                 winsum+=int(win)
@@ -115,7 +114,9 @@ def botty():
 
     @bot.command()
     async def ping(ctx):
-        await ctx.send(obtain())
+        obtain()
+        for x in range(10):
+            await ctx.send(playerInfo[x])
 
     bot.run(BOT_KEY)
 botty()
