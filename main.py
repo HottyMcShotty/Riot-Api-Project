@@ -1,6 +1,7 @@
 import requests
 import time
 import tkinter as tk
+import
 API_KEY="RGAPI-21e631a4-0df4-479b-8636-db9b18f324cb"
 name="The%20Troglodyte"
 id="1111"
