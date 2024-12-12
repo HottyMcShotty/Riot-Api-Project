@@ -1,8 +1,11 @@
 import requests
 import time
 import tkinter as tk
-import
-API_KEY="RGAPI-21e631a4-0df4-479b-8636-db9b18f324cb"
+import os
+from dotenv import load_dotenv
+load_dotenv(dotenv_path="C:/Users/samue/OneDrive/Desktop/LeagueCompanion/Riot-Api-Project/.env")
+API_KEY=str(os.getenv("API_KEY"))
+print(API_KEY)
 name="The%20Troglodyte"
 id="1111"
 api_url="https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/"+name+"/"+id+"?api_key="+API_KEY
