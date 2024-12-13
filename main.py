@@ -5,7 +5,7 @@ import time
 import tkinter as tk
 import os
 from dotenv import load_dotenv
-load_dotenv(dotenv_path="C:/Users/samue/OneDrive/Desktop/LeagueCompanion/Riot-Api-Project/.env")
+load_dotenv(dotenv_path=".env")
 API_KEY=str(os.getenv("API_KEY"))
 print(API_KEY)
 name="The%20Troglodyte"
@@ -13,7 +13,7 @@ id="1111"
 api_url="https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/"+name+"/"+id+"?api_key="+API_KEY
 kda =0
 playerList=[None]*10
-load_dotenv(dotenv_path="C:/Users/samue/OneDrive/Desktop/LeagueCompanion/Riot-Api-Project/.env")
+load_dotenv(dotenv_path=".env")
 BOT_KEY = os.getenv("BOT_KEY")
 print(f"Loaded BOT_KEY: {BOT_KEY}")  # Debugging line``
 
