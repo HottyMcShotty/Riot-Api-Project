@@ -60,7 +60,7 @@ def obtain():
                 
             except Exception as e:
                 print(f"An error occurred: {e}")
-        winsum/=5
+        winsum/=3
         print(str((1+x)*10)+"% Done!")
         temp_name=match_data_call["info"]["participants"][info]["summonerName"]
         playerInfo.append({"Name":temp_name,"KDA":round((totalkda/5),2),"Win":str(winsum*100)})
