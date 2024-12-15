@@ -8,8 +8,8 @@ from dotenv import load_dotenv
 load_dotenv(dotenv_path="Riot-Api-Project\.env")
 API_KEY=str(os.getenv("API_KEY"))
 print(API_KEY)
-name="The%20Troglodyte"
-id="1111"
+name="Autolykus"#"The%20Troglodyte"
+id="NA1"#"1111"
 api_url="https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/"+name+"/"+id+"?api_key="+API_KEY
 kda =0
 playerList=[None]*10
@@ -23,15 +23,23 @@ async def obtain(ctx):
     #getting the json file, then parsing the json file, and then grabbing the puuid
     puuid=requests.get(api_url).json()["puuid"]
     active_game=requests.get("https://na1.api.riotgames.com/lol/spectator/v5/active-games/by-summoner/"+puuid+"?api_key="+API_KEY)
-    print(active_game)
+    
+    if active_game.status_code == 200:
+        await ctx.send("Current Game Data")
+        for x in range(10):
+            playerList[x]=active_game.json()['participants'][x]['puuid']
+            
 
-    matches_url="https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/"+puuid+"/ids?start=0&count=5&api_key="+API_KEY
-    lastMatch=requests.get(matches_url).json()[0]
-    lastMatchurl="https://americas.api.riotgames.com/lol/match/v5/matches/"+lastMatch+"?api_key="+API_KEY
+    else:
+        print(active_game)
+        await ctx.send("Past Game Data")
+        matches_url="https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/"+puuid+"/ids?start=0&count=5&api_key="+API_KEY
+        lastMatch=requests.get(matches_url).json()[0]
+        lastMatchurl="https://americas.api.riotgames.com/lol/match/v5/matches/"+lastMatch+"?api_key="+API_KEY
 
-    #putting all 10 players from current/lastmatch into a list
-    for x in range(10):
-        playerList[x]=requests.get(lastMatchurl).json()['metadata']["participants"][x]
+        #putting all 10 players from current/lastmatch into a list
+        for x in range(10):
+            playerList[x]=requests.get(lastMatchurl).json()['metadata']["participants"][x]
         
 
     #obtaining player stats
@@ -50,6 +58,8 @@ async def obtain(ctx):
                 info=match_data_call['metadata']["participants"].index(playerList[x])
                 kda =match_data_call["info"]["participants"][info]["challenges"]["kda"]
                 win =match_data_call["info"]["participants"][info]["win"]
+                #win =match_data_call["info"]["participants"][info]["win"]
+                vs =match_data_call["info"]["participants"][info]["visionScore"]
                 totalkda=totalkda+kda
                 winsum+=int(win)
                 
