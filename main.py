@@ -5,7 +5,7 @@ import time
 import tkinter as tk
 import os
 from dotenv import load_dotenv
-load_dotenv(dotenv_path=".env")
+load_dotenv(dotenv_path="Riot-Api-Project\.env")
 API_KEY=str(os.getenv("API_KEY"))
 print(API_KEY)
 name="The%20Troglodyte"
@@ -13,7 +13,6 @@ id="1111"
 api_url="https://americas.api.riotgames.com/riot/account/v1/accounts/by-riot-id/"+name+"/"+id+"?api_key="+API_KEY
 kda =0
 playerList=[None]*10
-load_dotenv(dotenv_path=".env")
 BOT_KEY = os.getenv("BOT_KEY")
 print(f"Loaded BOT_KEY: {BOT_KEY}")  # Debugging line``
 
@@ -23,6 +22,8 @@ async def obtain(ctx):
     playerInfo=[]
     #getting the json file, then parsing the json file, and then grabbing the puuid
     puuid=requests.get(api_url).json()["puuid"]
+    active_game=requests.get("https://na1.api.riotgames.com/lol/spectator/v5/active-games/by-summoner/"+puuid+"?api_key="+API_KEY)
+    print(active_game)
 
     matches_url="https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/"+puuid+"/ids?start=0&count=5&api_key="+API_KEY
     lastMatch=requests.get(matches_url).json()[0]
@@ -34,9 +35,6 @@ async def obtain(ctx):
         
 
     #obtaining player stats
-    # This doesn't work right now most likely solution is an imbedded for loop to hold the first index of the
-    #player list while we iterate through the games then repeat for all players I would note that the best way to
-    #store this info will most likely be a dictionary inside of a list.
     for x in range(10):
         winsum=0
         ####Iteating through our player list and getting match ids for their last 10 matches
