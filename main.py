@@ -8,12 +8,12 @@ from dotenv import load_dotenv
 load_dotenv(dotenv_path="Riot-Api-Project\.env")
 API_KEY=str(os.getenv("API_KEY"))
 print(API_KEY)
-name="Autolykus"#"The%20Troglodyte"
-id="NA1"#"1111"
+#name="Autolykus"#"The%20Troglodyte"
+#id="NA1"#"1111"
 kda =0
 playerList=[None]*10
 BOT_KEY = os.getenv("BOT_KEY")
-print(f"Loaded BOT_KEY: {BOT_KEY}")  # Debugging line``
+statList=[None]*10
 
 
 
@@ -75,8 +75,9 @@ async def obtain(ctx, result, userid):
             winsum/=3
             print(str((1+x)*10)+"% Done!")
             temp_name=match_data_call["info"]["participants"][info]["summonerName"]
-            playerInfo.append({"Name":temp_name,"KDA":round((totalkda/5),2),"Win":str(winsum*100)})
-            await ctx.send(f"Name: {temp_name}\tKDA: {round((totalkda/3),2)}\tWin Rate: {round((winsum * 100),2)}%")
+            playerInfo.append({"Name":temp_name,"KDA":round((totalkda/3),2),"Win":str(winsum*100)})
+            #await ctx.send(f"Name: {temp_name}\tKDA: {round((totalkda/3),2)}\tWin Rate: {str(round((winsum * 100),2))}%")
+            statList[x]=({"Name":temp_name,"KDA":round((totalkda/3),2),"Win":str(round((winsum * 100),2))})
             totalkda=0
             win=0
             
@@ -99,6 +100,11 @@ def botty():
 
     @bot.command()
     async def ping(ctx, *, message):
+        embed=discord.Embed(
+            title="Player Stats",
+            description="Here are the stats for all the Players",
+            color=0x0099ff
+        )
         count=20
         nameid = message.split("#",1)
         username=nameid[0]
@@ -115,6 +121,9 @@ def botty():
             
         await ctx.send("Gathering Data, this may take a moment")
         await obtain(ctx, result,userid)
+        for x in range(10):
+            embed.add_field(name=statList[x]["Name"],value=f"KDA: {statList[x]['KDA']:<20} Win Rate: {statList[x]['Win']:<20}% ",inline=False)
+        await ctx.send(embed=embed)
 
     bot.run(BOT_KEY)
 botty()
