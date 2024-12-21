@@ -2,11 +2,15 @@ import discord
 from discord.ext import commands
 import requests
 import time
+import json
 import tkinter as tk
 import os
 from dotenv import load_dotenv
 import asyncio
 from functools import lru_cache
+
+with open("imgs.json", "r") as f:
+    champIcons=json.load(f)
 
 # Load .env variables
 load_dotenv(dotenv_path=".env")
@@ -55,7 +59,9 @@ async def obtain(ctx, result, userid):
         for x in range(10):
             winsum = 0
             matches_url = f"https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/{playerList[x]}/ids?start=0&count=10&api_key={API_KEY}"
-            for y in range(3):
+            
+
+            for y in range(4, -1, -1):
                 try:
                     matches = get_api_data(matches_url)[y]
                     temp_match = f"https://americas.api.riotgames.com/lol/match/v5/matches/{matches}?api_key={API_KEY}"
@@ -63,16 +69,17 @@ async def obtain(ctx, result, userid):
                     info = match_data_call['metadata']["participants"].index(playerList[x])
                     kda = match_data_call["info"]["participants"][info]["challenges"]["kda"]
                     win = match_data_call["info"]["participants"][info]["win"]
-                    vs = match_data_call["info"]["participants"][info]["visionScore"]
+                    champ=match_data_call["info"]["participants"][info]["championName"]
+                    
                     totalkda += kda
                     winsum += int(win)
                 except Exception as e:
                     print(f"An error occurred: {e}")
-            winsum /= 3
+            winsum /= 10
             print(str((1 + x) * 10) + "% Done!")
             temp_name = match_data_call["info"]["participants"][info]["summonerName"]
-            playerInfo.append({"Name": temp_name, "KDA": round((totalkda / 3), 2), "Win": str(winsum * 100)})
-            statList[x] = {"Name": temp_name, "KDA": round((totalkda / 3), 2), "Win": str(round((winsum * 100), 2))}
+            playerInfo.append({"Name": temp_name, "KDA": round((totalkda / 10), 2), "Win": str(winsum * 100)})
+            statList[x] = {"Name": temp_name, "KDA": round((totalkda / 10), 2), "Champ":champ, "Win": str(round((winsum * 100), 2))}
             totalkda = 0
             win = 0
 
@@ -107,10 +114,19 @@ def botty():
 
         await ctx.send("Gathering Data, this may take a moment")
         await obtain(ctx, result, userid)
-        for x in range(10):
-            embed.add_field(name=statList[x]["Name"], value=f"KDA: {statList[x]['KDA']:<20} Win Rate: {statList[x]['Win']:<20}% ", inline=False)
-        await ctx.send(embed=embed)
 
+        column1=""
+        column2=""
+        for x in range(10):
+            player_stats = f"{champIcons[statList[x]['Champ']]} {statList[x]['Name']}\nKDA: {statList[x]['KDA']:<20}\nWin Rate: {statList[x]['Win']:<20}%\n\n"
+            if x < 5:
+                column1 += player_stats
+            else:
+                column2 += player_stats
+        embed.add_field(name="Column 1", value=column1, inline=True)
+        embed.add_field(name="Column 2", value=column2, inline=True)
+
+        await ctx.send(embed=embed)
     bot.run(BOT_KEY)
 
 botty()
