@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 import asyncio
 from functools import lru_cache
 
-with open("imgs.json", "r") as f:
+with open("Riot-Api-Project\imgs.json", "r") as f:
     champIcons=json.load(f)
 
 # Load .env variables
